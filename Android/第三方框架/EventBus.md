@@ -5,6 +5,22 @@
 ## 原理：
 发送事件的时候，根据事件类型找到所有的订阅者，然后遍历订阅者的订阅方法找到对应的方法
 通过类型找到类的时候，要调用方法，是用到反射（只是根据类去调用订阅方法的时候用）
-![Class c = Class. forName-className-;](http://ob9iws2up.bkt.clouddn.com/Class c = Class. forName(className);.png)
+
+```
+//获取类
+Class c =Class.forName(className);
+TestClass tc=(TestClass)c.newInstance();
+
+//获取所有的方法
+Method[] ms=c.getDeclaredMethods();
+
+for(Method method:ms){
+    if(method.isAnnotationPresent(BindGet.class)){
+        BindGet bindGet=method.getAnnotation(BindGet.class);
+        String param=bindGet.value();
+        method.invoke(tc,param);
+    }
+}
+```
 
 
